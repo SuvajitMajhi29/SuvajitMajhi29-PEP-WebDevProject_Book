@@ -34,7 +34,7 @@ public class SeleniumTest {
 
     @BeforeEach
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "driver/chromedriver"); // linux_64
+        System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe"); // linux_64
 
         File file = new File("src/main/java/com/revature/index.html");
         String path = "file://" + file.getAbsolutePath();
