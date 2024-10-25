@@ -1,0 +1,53 @@
+/* Below are styles that are optional to use. You can choose to incorporate your own CSS styles. */
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+header, footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+}
+
+main {
+    padding: 2rem;
+}
+
+#search-form {
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+
+#filter-sort {
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+#book-list {
+    list-style-type: none;
+}
+
+.book-item {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.book-item img {
+    max-width: 100%;
+    height: auto;
+}
+
+#selected-book {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+}
+
