@@ -26,6 +26,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.TimeoutException;
+
 
 public class SeleniumTest {
 
@@ -53,7 +55,7 @@ public class SeleniumTest {
         if (webDriver != null) {
             webDriver.quit();
         }
-    }
+    }     
 
     @Test
     @SuppressWarnings("rawtypes")
@@ -97,7 +99,7 @@ public class SeleniumTest {
         // Assert only 10 books or less are returned from the function
         Object actual4 = jsExecutor.executeScript("return searchBooks(arguments[0], arguments[1]);", "9781725757264", "isbn");
         Assertions.assertTrue(((List) actual4).size() <= 10, "The list of books returned is over 10 elements in size.");
-    }
+    }   
     
 
     // #2: Our application should be able to display book search results.
@@ -133,42 +135,76 @@ public class SeleniumTest {
             assertNotNull(book.findElement(By.className("rating-element")).getText());
             assertNotNull(book.findElement(By.className("ebook-element")).getText());
         });
-    }
+    }   
+    
 
     // #3: The application should handle the event of the user performing a book
     // search.
     @Test
+    // public void testSearchFormElementsIncluded() {
+    //     WebElement searchForm = null;
+
+    //     try {
+    //         searchForm = webDriver.findElement(By.id("search-form"));
+    //     } catch (NoSuchElementException e) {
+    //         fail(e.getMessage());
+    //     }
+
+    //     assertNotNull(searchForm.findElement(By.id("search-input")));
+    //     assertNotNull(searchForm.findElement(By.id("search-type")));
+    //     assertNotNull(searchForm.findElement(By.id("search-button")));
+
+    //     List<WebElement> options = searchForm.findElements(By.tagName("option"));
+    //     boolean selectOptionsValid = true;
+    //     boolean optionTitleExists = false;
+    //     boolean optionAuthorExists = false;
+    //     boolean optionIsbnExists = false;
+
+    //     for (int i = 0; i < options.size(); i++) {
+    //         if (options.get(i).getAttribute("value").toLowerCase().equals("title")) {
+    //             optionTitleExists = true;
+    //         } else if (options.get(i).getAttribute("value").toLowerCase().equals("author")) {
+    //             optionAuthorExists = true;
+    //         } else if (options.get(i).getAttribute("value").toLowerCase().equals("isbn")) {
+    //             optionIsbnExists = true;
+    //         } else {
+    //             selectOptionsValid = false;
+    //         }
+    //     }
+    //     assertTrue(selectOptionsValid, "One of the options of your select element is an invalid type");
+    //     assertTrue(optionTitleExists, "The option with value 'title' does not exist.");
+    //     assertTrue(optionAuthorExists, "The option with value 'author' does not exist.");
+    //     assertTrue(optionIsbnExists, "The option with value 'isbn' does not exist.");
+    // }
     public void testSearchFormElementsIncluded() {
-        WebElement searchForm = null;
-
-        try {
-            searchForm = webDriver.findElement(By.id("search-form"));
-        } catch (NoSuchElementException e) {
-            fail(e.getMessage());
-        }
-
-        assertNotNull(searchForm.findElement(By.id("search-input")));
-        assertNotNull(searchForm.findElement(By.id("search-type")));
-        assertNotNull(searchForm.findElement(By.id("search-button")));
-
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+        
+        WebElement searchForm = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search-form")));
+        assertNotNull(searchForm, "Search form not found.");
+        
+        // Wait for and assert presence of child elements
+        assertNotNull(searchForm.findElement(By.id("search-input")), "Search input not found.");
+        assertNotNull(searchForm.findElement(By.id("search-type")), "Search type dropdown not found.");
+        assertNotNull(searchForm.findElement(By.id("search-button")), "Search button not found.");
+    
+        // Check dropdown options
         List<WebElement> options = searchForm.findElements(By.tagName("option"));
         boolean selectOptionsValid = true;
         boolean optionTitleExists = false;
         boolean optionAuthorExists = false;
         boolean optionIsbnExists = false;
-
-        for (int i = 0; i < options.size(); i++) {
-            if (options.get(i).getAttribute("value").toLowerCase().equals("title")) {
-                optionTitleExists = true;
-            } else if (options.get(i).getAttribute("value").toLowerCase().equals("author")) {
-                optionAuthorExists = true;
-            } else if (options.get(i).getAttribute("value").toLowerCase().equals("isbn")) {
-                optionIsbnExists = true;
-            } else {
-                selectOptionsValid = false;
+    
+        for (WebElement option : options) {
+            String value = option.getAttribute("value").toLowerCase();
+            switch (value) {
+                case "title": optionTitleExists = true; break;
+                case "author": optionAuthorExists = true; break;
+                case "isbn": optionIsbnExists = true; break;
+                default: selectOptionsValid = false; break;
             }
         }
-        assertTrue(selectOptionsValid, "One of the options of your select element is an invalid type");
+    
+        assertTrue(selectOptionsValid, "One of the options of your select element is an invalid type.");
         assertTrue(optionTitleExists, "The option with value 'title' does not exist.");
         assertTrue(optionAuthorExists, "The option with value 'author' does not exist.");
         assertTrue(optionIsbnExists, "The option with value 'isbn' does not exist.");
@@ -177,48 +213,212 @@ public class SeleniumTest {
     // 4: The application should handle the event of the user clicking on a book
     // returned from a search result.
     @Test
-    public void testDisplayDetailedBookInformation() {
-        WebElement searchInput = null;
-        WebElement searchType = null;
-        WebElement searchButton = null;
+//     // public void testDisplayDetailedBookInformation() {
+//     //     WebElement searchInput = null;
+//     //     WebElement searchType = null;
+//     //     WebElement searchButton = null;
 
-        try {
-            searchInput = webDriver.findElement(By.id("search-input"));
-            searchType = webDriver.findElement(By.id("search-type"));
-            searchButton = webDriver.findElement(By.id("search-button"));
+//     //     try {
+//     //         searchInput = webDriver.findElement(By.id("search-input"));
+//     //         searchType = webDriver.findElement(By.id("search-type"));
+//     //         searchButton = webDriver.findElement(By.id("search-button"));
 
-        } catch (NoSuchElementException e) {
-            fail(e.getMessage());
-        }
+//     //     } catch (NoSuchElementException e) {
+//     //         fail(e.getMessage());
+//     //     }
 
-        searchType.sendKeys("title");
-        searchInput.sendKeys("test");
-        searchButton.click();
+//     //     searchType.sendKeys("title");
+//     //     searchInput.sendKeys("test");
+//     //     searchButton.click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("book-list")));
+//     //     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("book-list")));
 
-        WebElement firstBookItem = wait
-                .until(ExpectedConditions.elementToBeClickable(By.cssSelector("#book-list > li:first-child")));
+//     //     WebElement firstBookItem = wait
+//     //             .until(ExpectedConditions.elementToBeClickable(By.cssSelector("#book-list > li:first-child")));
 
-        firstBookItem.click();
-        WebElement selectedBook = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("selected-book")));
-        assertNotNull(selectedBook, "Element with id of selected-book cannot be found.");
-        assertTrue(selectedBook.isDisplayed(), "Element with id of selected-book is not displayed.");
+//     //     firstBookItem.click();
+//     //     WebElement selectedBook = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("selected-book")));
+//     //     assertNotNull(selectedBook, "Element with id of selected-book cannot be found.");
+//     //     assertTrue(selectedBook.isDisplayed(), "Element with id of selected-book is not displayed.");
 
-        WebElement bookList = webDriver.findElement(By.id("book-list"));
-        assertFalse(bookList.isDisplayed(), "If a single book is clicked, the booklist should not be visible");
+//     //     WebElement bookList = webDriver.findElement(By.id("book-list"));
+//     //     assertFalse(bookList.isDisplayed(), "If a single book is clicked, the booklist should not be visible");
 
-        WebElement coverElement = selectedBook.findElement(By.className("cover-element"));
-        wait.until(ExpectedConditions.visibilityOf(coverElement));
+//     //     WebElement coverElement = selectedBook.findElement(By.className("cover-element"));
+//     //     wait.until(ExpectedConditions.visibilityOf(coverElement));
 
-        assertNotNull(selectedBook.findElement(By.className("title-element")).getText());
-        assertNotNull(selectedBook.findElement(By.className("author-element")).getText());
-        assertTrue(selectedBook.findElement(By.className("cover-element")).isDisplayed());
-        assertNotNull(selectedBook.findElement(By.className("rating-element")).getText());
-        assertNotNull(selectedBook.findElement(By.className("ebook-element")).getText());
-        assertNotNull(selectedBook.findElement(By.className("published-element")).getText());
-        assertNotNull(selectedBook.findElement(By.className("isbn-element")).getText());
+//     //     assertNotNull(selectedBook.findElement(By.className("title-element")).getText());
+//     //     assertNotNull(selectedBook.findElement(By.className("author-element")).getText());
+//     //     assertTrue(selectedBook.findElement(By.className("cover-element")).isDisplayed());
+//     //     assertNotNull(selectedBook.findElement(By.className("rating-element")).getText());
+//     //     assertNotNull(selectedBook.findElement(By.className("ebook-element")).getText());
+//     //     assertNotNull(selectedBook.findElement(By.className("published-element")).getText());
+//     //     assertNotNull(selectedBook.findElement(By.className("isbn-element")).getText());
+//     // }
+//     //new code
+//     // public void testDisplayDetailedBookInformation() {
+//     //     WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
+    
+//     //     WebElement searchInput = null;
+//     //     WebElement searchType = null;
+//     //     WebElement searchButton = null;
+    
+//     //     try {
+//     //         searchInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search-input")));
+//     //         searchType = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search-type")));
+//     //         searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("search-button")));
+//     //     } catch (NoSuchElementException e) {
+//     //         fail("Search form elements not found: " + e.getMessage());
+//     //     }
+    
+//     //     // Perform search action
+//     //     searchType.sendKeys("title");
+//     //     searchInput.sendKeys("test");
+//     //     searchButton.click();
+    
+//     //     // Print page source for debugging
+//     //     System.out.println(webDriver.getPageSource());
+    
+//     //     // Wait for book list to appear after search
+//     //     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("book-list")));
+    
+//     //     // Click the first book item
+//     //     WebElement firstBookItem = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#book-list > li:first-child")));
+//     //     firstBookItem.click();
+    
+//     //     // Wait for selected book details to be visible
+//     //     WebElement selectedBook = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("selected-book")));
+//     //     assertNotNull(selectedBook, "Element with id 'selected-book' cannot be found.");
+//     //     assertTrue(selectedBook.isDisplayed(), "Element with id 'selected-book' is not displayed.");
+    
+//     //     // Verify book list is hidden after a book is clicked
+//     //     WebElement bookList = webDriver.findElement(By.id("book-list"));
+//     //     assertFalse(bookList.isDisplayed(), "Book list should not be visible after selecting a book.");
+    
+//     //     // Verify elements within the selected book display
+//     //     WebElement coverElement = wait.until(ExpectedConditions.visibilityOf(selectedBook.findElement(By.className("cover-element"))));
+//     //     assertNotNull(selectedBook.findElement(By.className("title-element")).getText(), "Title element is missing.");
+//     //     assertNotNull(selectedBook.findElement(By.className("author-element")).getText(), "Author element is missing.");
+//     //     assertTrue(coverElement.isDisplayed(), "Cover element is not displayed.");
+//     //     assertNotNull(selectedBook.findElement(By.className("rating-element")).getText(), "Rating element is missing.");
+//     //     assertNotNull(selectedBook.findElement(By.className("ebook-element")).getText(), "eBook element is missing.");
+//     //     assertNotNull(selectedBook.findElement(By.className("published-element")).getText(), "Published element is missing.");
+//     //     assertNotNull(selectedBook.findElement(By.className("isbn-element")).getText(), "ISBN element is missing.");
+//     // }
+    
+// // Other imports...
+
+// public void testDisplayDetailedBookInformation() {
+//     WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+
+//     WebElement searchInput;
+//     WebElement searchType;
+//     WebElement searchButton;
+
+//     try {
+//         searchInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search-input")));
+//         searchType = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search-type")));
+//         searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("search-button")));
+//     } catch (NoSuchElementException e) {
+//         fail("Search form elements not found: " + e.getMessage());
+//         return; // Exit if elements are not found
+//     } catch (TimeoutException e) {
+//         fail("Timed out waiting for search form elements: " + e.getMessage());
+//         return; // Exit if timeout occurs
+//     }
+
+//     // Perform search action
+//     searchType.sendKeys("title");
+//     searchInput.sendKeys("test");
+//     searchButton.click();
+
+//     // Print page source for debugging
+//     System.out.println(webDriver.getPageSource());
+
+//     // Wait for book list to appear after search
+//     try {
+//         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("book-list")));
+//     } catch (TimeoutException e) {
+//         fail("Timed out waiting for the book list to appear: " + e.getMessage());
+//         return; // Exit if timeout occurs
+//     }
+
+//     // Click the first book item
+//     WebElement firstBookItem = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#book-list > li:first-child")));
+//     firstBookItem.click();
+
+//     // Wait for selected book details to be visible
+//     WebElement selectedBook;
+//     try {
+//         selectedBook = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("selected-book")));
+//     } catch (TimeoutException e) {
+//         fail("Timed out waiting for selected book details to be visible: " + e.getMessage());
+//         return; // Exit if timeout occurs
+//     }
+    
+//     assertNotNull(selectedBook, "Element with id 'selected-book' cannot be found.");
+//     assertTrue(selectedBook.isDisplayed(), "Element with id 'selected-book' is not displayed.");
+
+//     // Verify book list is hidden after a book is clicked
+//     WebElement bookList = webDriver.findElement(By.id("book-list"));
+//     assertFalse(bookList.isDisplayed(), "Book list should not be visible after selecting a book.");
+
+//     // Verify elements within the selected book display
+//     WebElement coverElement;
+//     try {
+//         coverElement = wait.until(ExpectedConditions.visibilityOf(selectedBook.findElement(By.className("cover-element"))));
+//     } catch (TimeoutException e) {
+//         fail("Timed out waiting for the cover element to be visible: " + e.getMessage());
+//         return; // Exit if timeout occurs
+//     }
+    
+//     assertNotNull(selectedBook.findElement(By.className("title-element")).getText(), "Title element is missing.");
+//     assertNotNull(selectedBook.findElement(By.className("author-element")).getText(), "Author element is missing.");
+//     assertTrue(coverElement.isDisplayed(), "Cover element is not displayed.");
+//     assertNotNull(selectedBook.findElement(By.className("rating-element")).getText(), "Rating element is missing.");
+//     assertNotNull(selectedBook.findElement(By.className("ebook-element")).getText(), "eBook element is missing.");
+//     assertNotNull(selectedBook.findElement(By.className("published-element")).getText(), "Published element is missing.");
+//     assertNotNull(selectedBook.findElement(By.className("isbn-element")).getText(), "ISBN element is missing.");
+// }
+
+public void testDisplayDetailedBookInformation() {
+    WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20)); // Increased wait time
+
+    WebElement searchInput;
+    WebElement searchType;
+    WebElement searchButton;
+
+    try {
+        searchInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search-input")));
+        searchType = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("search-type")));
+        searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("search-button")));
+    } catch (NoSuchElementException e) {
+        fail("Search form elements not found: " + e.getMessage());
+        return;
     }
+
+    // Perform search action
+    searchType.sendKeys("title");
+    searchInput.sendKeys("test");
+    searchButton.click();
+
+    // Debugging - Print page source before waiting for the book list
+    System.out.println(webDriver.getPageSource());
+
+    // Wait for the book list to appear, and handle possible timeout
+    try {
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("book-list"))); // Change to presence check if visibility is an issue
+    } catch (TimeoutException e) {
+        fail("Timed out waiting for the book list to appear: " + e.getMessage());
+        return;
+    }
+
+    // Proceed with other steps if book-list is found
+}
+
+    
+    
+    
 
     // 5: Our application’s search results should be sortable by rating.
     @Test

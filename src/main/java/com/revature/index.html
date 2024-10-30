@@ -7,6 +7,59 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <h1>Book Finder</h1>
+        <p>Discover your next favorite book by searching by title, author, or ISBN.</p>
+    </header>
+
+    <main>
+        <!-- Search Form Section -->
+        <section id="search-section">
+            <form id="search-form">
+                <label for="search-input">Search:</label>
+                <input type="text" id="search-input" placeholder="Enter title, author, or ISBN" required>
+
+                <label for="search-type">Search by:</label>
+                <select id="search-type">
+                    <option value="title">Title</option>
+                    <option value="author">Author</option>
+                    <option value="isbn">ISBN</option>
+                </select>
+
+                <button type="submit" id="search-button">Search</button>
+            </form>
+        </section>
+
+        <!-- Sorting and Filtering Controls -->
+        <aside>
+            <button id="sort-rating">Sort by Rating</button>
+            <label for="ebook-filter">
+                <input type="checkbox" id="ebook-filter">
+                Only show eBooks
+            </label>
+        </aside>
+
+        <!-- Book List Display -->
+        <section id="results-section">
+            <ul id="book-list"></ul>
+        </section>
+
+        <!-- Selected Book Details Display -->
+        <section id="selected-book" style="display: none;">
+            <h2 class="title-element">Book Title</h2>
+            <p class="author-element">Author: Author Name</p>
+            <p class="published-element">Published Year: 2023</p>
+            <img src="cover.jpg" alt="Book Cover" class="cover-element">
+            <p class="isbn-element">ISBN: 1234567890</p>
+            <p class="ebook-element">eBook Access: Available</p>
+            <p class="rating-element">Rating: 4.5</p>
+            <!-- Detailed book information will be populated here -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Book Finder Application. Powered by Google Books API.</p>
+    </footer>
     
     
     <script src="script.js"></script>
