@@ -8,7 +8,7 @@ const selectedBook = document.getElementById('selected-book');
 const sortRatingButton = document.getElementById('sort-rating');
 const ebookFilterCheckbox = document.getElementById('ebook-filter');
 
-let currentBooks = []; // To store the current book list
+let currentBooks = [];
 
 // Event listeners
 searchForm.addEventListener('submit', handleSearch);
@@ -54,7 +54,7 @@ async function searchBooks(query, type) {
         const response = await fetch(url);
         const data = await response.json();
 
-        if (!data.items) return []; // Return empty array if no books found
+        if (!data.items) return []; 
 
         return data.items.map(item => {
             const info = item.volumeInfo;
@@ -98,9 +98,9 @@ async function searchBooks(query, type) {
 // * 5. Ensures that the 'selected-book' element is not visible.
 // */
 function displayBookList(books) {
-    bookList.innerHTML = ''; // Clear current list
-    selectedBook.style.display = 'none'; // Hide detailed view
-    bookList.style.display = 'grid'; // Show the book list
+    bookList.innerHTML = ''; 
+    selectedBook.style.display = 'none';
+    bookList.style.display = 'grid'; 
 
     books.forEach(book => {
         const li = document.createElement('li');
@@ -116,10 +116,9 @@ function displayBookList(books) {
             </div>
         `;
 
-        li.addEventListener('click', () => displaySingleBook(book)); // Attach click listener for detailed view
+        li.addEventListener('click', () => displaySingleBook(book)); 
         bookList.appendChild(li);
     });
-
     currentBooks = books;
   
 }
@@ -146,9 +145,7 @@ function displayBookList(books) {
     event.preventDefault();
     const query = searchInput.value.trim();
     const type = searchType.value;
-
     if (!query) return;
-
     const books = await searchBooks(query, type);
     displayBookList(books);
 
@@ -181,8 +178,8 @@ function displayBookList(books) {
 //  * 
 //  */
 function displaySingleBook(book) {
-    bookList.style.display = 'none'; // Hide book list
-    selectedBook.style.display = 'block'; // Show detailed view
+    bookList.style.display = 'none';
+    selectedBook.style.display = 'block';
 
     selectedBook.innerHTML = `
         <h2>${book.title}</h2>
